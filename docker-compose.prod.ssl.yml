@@ -1,0 +1,10 @@
+services:
+  proxy:
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./infra/nginx/default-ssl.conf:/etc/nginx/templates/default.conf.template:ro
+      - ./infra/certs:/etc/nginx/certs:ro
