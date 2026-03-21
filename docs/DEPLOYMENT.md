@@ -11,12 +11,19 @@ This project can be deployed in three common ways:
 Backend variables:
 
 ```env
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/jobportal?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
 DB_USERNAME=root
 DB_PASSWORD=change-me
 JWT_SECRET=replace-with-a-long-random-base64-secret
 JWT_EXPIRATION=86400000
 APP_CORS_ALLOWED_ORIGINS=https://your-frontend-domain.com
 SERVER_PORT=8081
+```
+
+If you run the backend on your host machine against the MySQL container from `docker compose`, use host port `3307` instead of `3306`:
+
+```env
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3307/jobportal?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
 ```
 
 Frontend variable:
