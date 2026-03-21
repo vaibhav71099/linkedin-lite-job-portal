@@ -42,3 +42,6 @@ frontend/dist/
 !.env.example
 !frontend/.env.example
 !.env.prod.example
+
+# Local Netlify folder
+.netlify
