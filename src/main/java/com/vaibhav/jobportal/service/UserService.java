@@ -29,18 +29,23 @@ public class UserService {
 		if (userRepository.existsByEmail(request.getEmail())) {
 			throw new UserAlreadyExistsException("User with this email already exists.");
 		}
+		if (userRepository.existsByPhone(request.getPhone())) {
+			throw new UserAlreadyExistsException("User with this phone number already exists.");
+		}
 
 		User user = new User();
 		user.setName(request.getName());
 		user.setBio("");
 		user.setSkills("");
 		user.setEmail(request.getEmail());
+		user.setPhone(request.getPhone());
 		if (request.getRole() == Role.ADMIN) {
 			throw new InvalidRoleException("Admin registration is not allowed.");
 		}
 		user.setRole(request.getRole());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setEmailVerified(Boolean.FALSE);
+		user.setPhoneVerified(Boolean.FALSE);
 		return userRepository.save(user);
 	}
 
@@ -87,8 +92,10 @@ public class UserService {
 			user.getBio(),
 			user.getSkills(),
 			user.getEmail(),
+			user.getPhone(),
 			user.getRole(),
-			user.getEmailVerified()
+			user.getEmailVerified(),
+			user.getPhoneVerified() == null ? Boolean.FALSE : user.getPhoneVerified()
 		);
 	}
 }

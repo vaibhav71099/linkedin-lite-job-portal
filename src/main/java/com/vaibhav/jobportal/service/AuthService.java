@@ -3,6 +3,7 @@ package com.vaibhav.jobportal.service;
 import com.vaibhav.jobportal.dto.AuthRequest;
 import com.vaibhav.jobportal.dto.AuthResponse;
 import com.vaibhav.jobportal.dto.RegisterRequest;
+import com.vaibhav.jobportal.dto.VerifyOtpRequest;
 import com.vaibhav.jobportal.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,19 +17,26 @@ public class AuthService {
 	private final JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
 	private final ApplicationUserDetailsService userDetailsService;
+	private final RegistrationOtpService registrationOtpService;
 
 	public AuthService(UserService userService,
 					  JwtService jwtService,
 					  AuthenticationManager authenticationManager,
-						  ApplicationUserDetailsService userDetailsService) {
+						  ApplicationUserDetailsService userDetailsService,
+					  RegistrationOtpService registrationOtpService) {
 		this.userService = userService;
 		this.jwtService = jwtService;
 		this.authenticationManager = authenticationManager;
 		this.userDetailsService = userDetailsService;
+		this.registrationOtpService = registrationOtpService;
 	}
 
-	public AuthResponse register(RegisterRequest request) {
-		var savedUser = userService.registerUser(request);
+	public void requestRegistrationOtp(RegisterRequest request) {
+		registrationOtpService.sendRegistrationOtps(request);
+	}
+
+	public AuthResponse verifyRegistrationOtp(VerifyOtpRequest request) {
+		var savedUser = registrationOtpService.verifyRegistrationOtps(request);
 		UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getEmail());
 		String token = jwtService.generateToken(userDetails);
 		return new AuthResponse(token, "User registered successfully.", userService.toUserResponse(savedUser));

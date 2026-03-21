@@ -67,6 +67,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 
+	@ExceptionHandler(PendingRegistrationNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handlePendingRegistrationNotFound(PendingRegistrationNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			.body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(OtpInvalidException.class)
+	public ResponseEntity<ApiResponse<Void>> handleOtpInvalid(OtpInvalidException ex) {
+		return ResponseEntity.badRequest()
+			.body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(OtpExpiredException.class)
+	public ResponseEntity<ApiResponse<Void>> handleOtpExpired(OtpExpiredException ex) {
+		return ResponseEntity.badRequest()
+			.body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
+	@ExceptionHandler(OtpDeliveryException.class)
+	public ResponseEntity<ApiResponse<Void>> handleOtpDelivery(OtpDeliveryException ex) {
+		return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+			.body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
 	@ExceptionHandler(ForbiddenOperationException.class)
 	public ResponseEntity<ApiResponse<Void>> handleForbiddenOperation(ForbiddenOperationException ex) {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)

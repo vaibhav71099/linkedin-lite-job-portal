@@ -1,56 +1,65 @@
 package com.vaibhav.jobportal.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "pending_registrations")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class User {
+public class PendingRegistration {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 120)
 	private String name;
-
-	@Column(length = 1000)
-	private String bio;
-
-	@Column(length = 1000)
-	private String skills;
 
 	@Column(nullable = false, unique = true)
 	private String email;
 
-	@Column(unique = true)
+	@Column(nullable = false, unique = true)
 	private String phone;
 
-	@Column(nullable = false)
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String password;
+	@Column(nullable = false, length = 255)
+	private String passwordHash;
 
 	@Column(nullable = false)
 	@Convert(converter = RoleConverter.class)
 	private Role role;
 
-	@Column(name = "email_verified", nullable = false)
+	@Column(nullable = false, length = 255)
+	private String emailOtpHash;
+
+	@Column(nullable = false, length = 255)
+	private String phoneOtpHash;
+
+	@Column(nullable = false)
+	private Instant emailOtpExpiresAt;
+
+	@Column(nullable = false)
+	private Instant phoneOtpExpiresAt;
+
+	@Column(nullable = false)
 	private Boolean emailVerified;
 
-	@Column(name = "phone_verified")
+	@Column(nullable = false)
 	private Boolean phoneVerified;
+
+	@Column(nullable = false)
+	private Instant createdAt;
+
+	@Column(nullable = false)
+	private Instant updatedAt;
 }

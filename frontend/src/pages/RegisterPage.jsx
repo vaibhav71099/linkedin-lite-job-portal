@@ -8,9 +8,15 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
     role: "USER"
   });
+  const [otpData, setOtpData] = useState({
+    emailOtp: "",
+    phoneOtp: ""
+  });
+  const [step, setStep] = useState("request");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,12 +26,37 @@ export default function RegisterPage() {
     setMessage("");
 
     try {
-      const response = await api.post("/auth/register", formData);
-      saveToken(response.data.data.token);
-      saveUser(response.data.data.user);
-      navigate("/dashboard");
+      if (step === "request") {
+        await api.post("/auth/register", formData);
+        setStep("verify");
+        setMessage("OTP sent to your email and phone. Enter both codes to continue.");
+      } else {
+        const response = await api.post("/auth/register/verify", {
+          email: formData.email,
+          phone: formData.phone,
+          emailOtp: otpData.emailOtp,
+          phoneOtp: otpData.phoneOtp
+        });
+        saveToken(response.data.data.token);
+        saveUser(response.data.data.user);
+        navigate("/dashboard");
+      }
     } catch (error) {
       setMessage(error.response?.data?.message || "Registration failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResendOtp() {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      await api.post("/auth/register", formData);
+      setMessage("New OTP sent. Please check your email and phone.");
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to resend OTP.");
     } finally {
       setLoading(false);
     }
@@ -50,6 +81,7 @@ export default function RegisterPage() {
               type="text"
               value={formData.name}
               onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+              disabled={step === "verify"}
               required
             />
           </label>
@@ -60,6 +92,19 @@ export default function RegisterPage() {
               type="email"
               value={formData.email}
               onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+              disabled={step === "verify"}
+              required
+            />
+          </label>
+
+          <label>
+            <span>Phone</span>
+            <input
+              type="tel"
+              placeholder="+91XXXXXXXXXX"
+              value={formData.phone}
+              onChange={(event) => setFormData({ ...formData, phone: event.target.value })}
+              disabled={step === "verify"}
               required
             />
           </label>
@@ -70,6 +115,7 @@ export default function RegisterPage() {
               type="password"
               value={formData.password}
               onChange={(event) => setFormData({ ...formData, password: event.target.value })}
+              disabled={step === "verify"}
               required
             />
           </label>
@@ -79,15 +125,59 @@ export default function RegisterPage() {
             <select
               value={formData.role}
               onChange={(event) => setFormData({ ...formData, role: event.target.value })}
+              disabled={step === "verify"}
             >
               <option value="USER">User</option>
               <option value="RECRUITER">Recruiter</option>
             </select>
           </label>
 
+          {step === "verify" && (
+            <>
+              <label>
+                <span>Email OTP</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={otpData.emailOtp}
+                  onChange={(event) => setOtpData({ ...otpData, emailOtp: event.target.value })}
+                  required
+                />
+              </label>
+
+              <label>
+                <span>Phone OTP</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={otpData.phoneOtp}
+                  onChange={(event) => setOtpData({ ...otpData, phoneOtp: event.target.value })}
+                  required
+                />
+              </label>
+            </>
+          )}
+
           <button type="submit" className="primary-button" disabled={loading}>
-            {loading ? "Creating account..." : "Register"}
+            {loading
+              ? step === "request"
+                ? "Sending OTP..."
+                : "Verifying OTP..."
+              : step === "request"
+                ? "Send OTP"
+                : "Verify & Create Account"}
           </button>
+
+          {step === "verify" && (
+            <button
+              type="button"
+              className="ghost-button"
+              disabled={loading}
+              onClick={handleResendOtp}
+            >
+              Resend OTP
+            </button>
+          )}
         </form>
 
         {message && <p className="message error">{message}</p>}

@@ -13,6 +13,8 @@ public class UserResponse {
 	private String bio;
 	private String skills;
 	private String email;
+	private String phone;
 	private Role role;
 	private Boolean emailVerified;
+	private Boolean phoneVerified;
 }
