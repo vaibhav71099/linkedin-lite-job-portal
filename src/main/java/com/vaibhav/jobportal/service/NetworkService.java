@@ -4,6 +4,7 @@ import com.vaibhav.jobportal.dto.ConnectionRequestResponse;
 import com.vaibhav.jobportal.dto.UserResponse;
 import com.vaibhav.jobportal.entity.ConnectionRequest;
 import com.vaibhav.jobportal.entity.ConnectionRequestStatus;
+import com.vaibhav.jobportal.entity.NotificationType;
 import com.vaibhav.jobportal.entity.User;
 import com.vaibhav.jobportal.exception.ForbiddenOperationException;
 import com.vaibhav.jobportal.exception.UserAlreadyExistsException;
@@ -22,15 +23,18 @@ public class NetworkService {
 	private final UserRepository userRepository;
 	private final ConnectionRequestRepository connectionRequestRepository;
 	private final UserService userService;
+	private final NotificationService notificationService;
 
 	public NetworkService(
 		UserRepository userRepository,
 		ConnectionRequestRepository connectionRequestRepository,
-		UserService userService
+		UserService userService,
+		NotificationService notificationService
 	) {
 		this.userRepository = userRepository;
 		this.connectionRequestRepository = connectionRequestRepository;
 		this.userService = userService;
+		this.notificationService = notificationService;
 	}
 
 	public List<UserResponse> getDiscoverPeople(String email) {
@@ -110,14 +114,34 @@ public class NetworkService {
 		request.setReceiver(receiver);
 		request.setStatus(ConnectionRequestStatus.PENDING);
 		request.setCreatedAt(Instant.now());
-		return toConnectionRequestResponse(connectionRequestRepository.save(request));
+		ConnectionRequest savedRequest = connectionRequestRepository.save(request);
+		notificationService.createNotification(
+			receiver,
+			requester,
+			NotificationType.CONNECTION_REQUEST,
+			requester.getName() + " sent you an invitation",
+			requester.getHeadline() == null || requester.getHeadline().isBlank()
+				? "Review the connection request."
+				: requester.getHeadline(),
+			"/network"
+		);
+		return toConnectionRequestResponse(savedRequest);
 	}
 
 	public ConnectionRequestResponse acceptConnectionRequest(String email, Long requestId) {
 		ConnectionRequest request = getOwnedPendingRequest(email, requestId);
 		request.setStatus(ConnectionRequestStatus.ACCEPTED);
 		request.setRespondedAt(Instant.now());
-		return toConnectionRequestResponse(connectionRequestRepository.save(request));
+		ConnectionRequest savedRequest = connectionRequestRepository.save(request);
+		notificationService.createNotification(
+			request.getRequester(),
+			request.getReceiver(),
+			NotificationType.CONNECTION_ACCEPTED,
+			request.getReceiver().getName() + " accepted your invitation",
+			"You are now connected.",
+			"/network"
+		);
+		return toConnectionRequestResponse(savedRequest);
 	}
 
 	public ConnectionRequestResponse ignoreConnectionRequest(String email, Long requestId) {

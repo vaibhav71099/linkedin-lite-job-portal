@@ -7,6 +7,7 @@ import com.vaibhav.jobportal.dto.PostResponse;
 import com.vaibhav.jobportal.entity.Post;
 import com.vaibhav.jobportal.entity.PostComment;
 import com.vaibhav.jobportal.entity.PostReaction;
+import com.vaibhav.jobportal.entity.NotificationType;
 import com.vaibhav.jobportal.entity.User;
 import com.vaibhav.jobportal.exception.PostNotFoundException;
 import com.vaibhav.jobportal.repository.PostCommentRepository;
@@ -24,19 +25,22 @@ public class PostService {
 	private final PostReactionRepository postReactionRepository;
 	private final UserService userService;
 	private final NetworkService networkService;
+	private final NotificationService notificationService;
 
 	public PostService(
 		PostRepository postRepository,
 		PostCommentRepository postCommentRepository,
 		PostReactionRepository postReactionRepository,
 		UserService userService,
-		NetworkService networkService
+		NetworkService networkService,
+		NotificationService notificationService
 	) {
 		this.postRepository = postRepository;
 		this.postCommentRepository = postCommentRepository;
 		this.postReactionRepository = postReactionRepository;
 		this.userService = userService;
 		this.networkService = networkService;
+		this.notificationService = notificationService;
 	}
 
 	public List<PostResponse> getFeed(String email) {
@@ -65,6 +69,7 @@ public class PostService {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new PostNotFoundException("Post not found."));
 
+		final boolean[] created = {false};
 		postReactionRepository.findByPostIdAndUserId(postId, currentUser.getId())
 			.ifPresentOrElse(
 				postReactionRepository::delete,
@@ -73,8 +78,20 @@ public class PostService {
 					reaction.setPost(post);
 					reaction.setUser(currentUser);
 					postReactionRepository.save(reaction);
+					created[0] = true;
 				}
 			);
+
+		if (created[0] && !post.getAuthor().getId().equals(currentUser.getId())) {
+			notificationService.createNotification(
+				post.getAuthor(),
+				currentUser,
+				NotificationType.POST_REACTION,
+				currentUser.getName() + " reacted to your post",
+				post.getContent(),
+				"/dashboard"
+			);
+		}
 
 		return toPostResponse(post, currentUser);
 	}
@@ -89,7 +106,18 @@ public class PostService {
 		comment.setAuthor(currentUser);
 		comment.setContent(request.getContent().trim());
 		comment.setCreatedAt(Instant.now());
-		return toPostCommentResponse(postCommentRepository.save(comment));
+		PostComment savedComment = postCommentRepository.save(comment);
+		if (!post.getAuthor().getId().equals(currentUser.getId())) {
+			notificationService.createNotification(
+				post.getAuthor(),
+				currentUser,
+				NotificationType.POST_COMMENT,
+				currentUser.getName() + " commented on your post",
+				request.getContent().trim(),
+				"/dashboard"
+			);
+		}
+		return toPostCommentResponse(savedComment);
 	}
 
 	private PostResponse toPostResponse(Post post, User currentUser) {
