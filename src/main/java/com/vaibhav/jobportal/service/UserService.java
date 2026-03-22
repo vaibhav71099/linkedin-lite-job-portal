@@ -32,6 +32,10 @@ public class UserService {
 
 		User user = new User();
 		user.setName(request.getName());
+		user.setHeadline(defaultHeadlineForRole(request.getRole()));
+		user.setLocation("");
+		user.setCurrentCompany("");
+		user.setEducation("");
 		user.setBio("");
 		user.setSkills("");
 		user.setEmail(request.getEmail());
@@ -76,6 +80,10 @@ public class UserService {
 
 		user.setName(request.getName());
 		user.setEmail(request.getEmail());
+		user.setHeadline(request.getHeadline() == null ? "" : request.getHeadline());
+		user.setLocation(request.getLocation() == null ? "" : request.getLocation());
+		user.setCurrentCompany(request.getCurrentCompany() == null ? "" : request.getCurrentCompany());
+		user.setEducation(request.getEducation() == null ? "" : request.getEducation());
 		user.setBio(request.getBio() == null ? "" : request.getBio());
 		user.setSkills(request.getSkills() == null ? "" : request.getSkills());
 
@@ -86,6 +94,10 @@ public class UserService {
 		return new UserResponse(
 			user.getId(),
 			user.getName(),
+			user.getHeadline(),
+			user.getLocation(),
+			user.getCurrentCompany(),
+			user.getEducation(),
 			user.getBio(),
 			user.getSkills(),
 			user.getEmail(),
@@ -94,5 +106,9 @@ public class UserService {
 			user.getEmailVerified(),
 			user.getPhoneVerified() == null ? Boolean.FALSE : user.getPhoneVerified()
 		);
+	}
+
+	private String defaultHeadlineForRole(Role role) {
+		return role == Role.RECRUITER ? "Recruiter | Hiring and talent partnerships" : "Open to networking and new opportunities";
 	}
 }

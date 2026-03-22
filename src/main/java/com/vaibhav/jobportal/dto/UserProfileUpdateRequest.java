@@ -18,6 +18,18 @@ public class UserProfileUpdateRequest {
 	@Email(message = "Email must be valid.")
 	private String email;
 
+	@Size(max = 160, message = "Headline must be at most 160 characters.")
+	private String headline;
+
+	@Size(max = 160, message = "Location must be at most 160 characters.")
+	private String location;
+
+	@Size(max = 160, message = "Current company must be at most 160 characters.")
+	private String currentCompany;
+
+	@Size(max = 160, message = "Education must be at most 160 characters.")
+	private String education;
+
 	@Size(max = 1000, message = "Bio must be at most 1000 characters.")
 	private String bio;
 

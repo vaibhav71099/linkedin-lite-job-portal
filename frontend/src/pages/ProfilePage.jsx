@@ -6,6 +6,10 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    headline: "",
+    location: "",
+    currentCompany: "",
+    education: "",
     bio: "",
     skills: ""
   });
@@ -20,6 +24,10 @@ export default function ProfilePage() {
       setFormData({
         name: currentUser.name || "",
         email: currentUser.email || "",
+        headline: currentUser.headline || "",
+        location: currentUser.location || "",
+        currentCompany: currentUser.currentCompany || "",
+        education: currentUser.education || "",
         bio: currentUser.bio || "",
         skills: currentUser.skills || ""
       });
@@ -34,6 +42,10 @@ export default function ProfilePage() {
         setFormData({
           name: profile.name || "",
           email: profile.email || "",
+          headline: profile.headline || "",
+          location: profile.location || "",
+          currentCompany: profile.currentCompany || "",
+          education: profile.education || "",
           bio: profile.bio || "",
           skills: profile.skills || ""
         });
@@ -65,13 +77,29 @@ export default function ProfilePage() {
 
   return (
     <section className="profile-layout">
+      <section className="feed-card profile-showcase">
+        <div className="profile-cover profile-cover-large" />
+        <div className="profile-showcase-body">
+          <div className="profile-avatar large">
+            {(formData.name || "U").slice(0, 1).toUpperCase()}
+          </div>
+          <div className="profile-showcase-copy">
+            <h2>{formData.name || "Your Name"}</h2>
+            <p className="profile-role-label">{formData.headline || "Add a headline that explains what you do."}</p>
+            <p className="sidebar-text">
+              {[formData.currentCompany, formData.location, formData.education].filter(Boolean).join(" • ") || "Company, location, and education make your profile read like a real professional identity."}
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="feed-card profile-editor">
         <div className="section-heading">
           <div>
             <p className="eyebrow">Profile</p>
-            <h2>Build a profile recruiters can scan in seconds</h2>
+            <h2>Build a profile people can trust at a glance</h2>
             <p className="support-text">
-              Keep your headline, summary, and skills current so the rest of the platform feels complete.
+              Fill the core fields that make LinkedIn-style profiles feel complete: headline, location, company, education, about, and skills.
             </p>
           </div>
         </div>
@@ -101,7 +129,47 @@ export default function ProfilePage() {
             </label>
 
             <label>
-              <span>Bio</span>
+              <span>Headline</span>
+              <input
+                type="text"
+                value={formData.headline}
+                onChange={(event) => setFormData({ ...formData, headline: event.target.value })}
+                placeholder="Software engineer building customer-facing products"
+              />
+            </label>
+
+            <label>
+              <span>Location</span>
+              <input
+                type="text"
+                value={formData.location}
+                onChange={(event) => setFormData({ ...formData, location: event.target.value })}
+                placeholder="Pune, Maharashtra, India"
+              />
+            </label>
+
+            <label>
+              <span>Current company</span>
+              <input
+                type="text"
+                value={formData.currentCompany}
+                onChange={(event) => setFormData({ ...formData, currentCompany: event.target.value })}
+                placeholder="Current workplace or venture"
+              />
+            </label>
+
+            <label>
+              <span>Education</span>
+              <input
+                type="text"
+                value={formData.education}
+                onChange={(event) => setFormData({ ...formData, education: event.target.value })}
+                placeholder="University or program"
+              />
+            </label>
+
+            <label>
+              <span>About</span>
               <textarea
                 rows="5"
                 value={formData.bio}

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,5 +46,14 @@ public class UserController {
 		return ResponseEntity.ok(
 			new ApiResponse<>(true, "Users fetched successfully.", userService.getAllUsers())
 		);
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
+		return ResponseEntity.ok(new ApiResponse<>(
+			true,
+			"User profile fetched successfully.",
+			userService.toUserResponse(userService.getUserById(id))
+		));
 	}
 }

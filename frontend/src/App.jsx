@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import JobListPage from "./pages/JobListPage";
 import ProfilePage from "./pages/ProfilePage";
+import NetworkPage from "./pages/NetworkPage";
 import AppliedJobsPage from "./pages/AppliedJobsPage";
 import RecruiterJobsPage from "./pages/RecruiterJobsPage";
 import AppLayout from "./components/AppLayout";
@@ -44,6 +45,7 @@ export default function App() {
         }
       >
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/network" element={<NetworkPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/jobs" element={<JobListPage />} />
         <Route

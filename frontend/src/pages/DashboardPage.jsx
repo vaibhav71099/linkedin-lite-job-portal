@@ -7,6 +7,8 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState(getUser());
   const [applications, setApplications] = useState([]);
   const [myJobs, setMyJobs] = useState([]);
+  const [connections, setConnections] = useState([]);
+  const [invitations, setInvitations] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -27,6 +29,13 @@ export default function DashboardPage() {
           const jobsResponse = await api.get("/jobs/mine");
           setMyJobs(jobsResponse.data.data);
         }
+
+        const [connectionsResponse, invitationsResponse] = await Promise.all([
+          api.get("/api/network/connections"),
+          api.get("/api/network/invitations")
+        ]);
+        setConnections(connectionsResponse.data.data);
+        setInvitations(invitationsResponse.data.data);
       } catch (error) {
         setMessage(error.response?.data?.message || "Unable to load dashboard.");
       } finally {
@@ -73,12 +82,12 @@ export default function DashboardPage() {
               <strong>{profile?.role || "USER"}</strong>
             </div>
             <div className="metric-tile">
-              <span>{profile?.role === "RECRUITER" ? "Active postings" : "Applications sent"}</span>
-              <strong>{profile?.role === "RECRUITER" ? myJobs.length : applications.length}</strong>
+              <span>Connections</span>
+              <strong>{connections.length}</strong>
             </div>
             <div className="metric-tile">
-              <span>Account status</span>
-              <strong>{profile?.emailVerified ? "Verified" : "Pending"}</strong>
+              <span>Pending invites</span>
+              <strong>{invitations.length}</strong>
             </div>
           </div>
         </section>
@@ -95,12 +104,59 @@ export default function DashboardPage() {
           </div>
 
           <div className="profile-stack">
-            <p className="profile-line">{profile?.email || "No email available"}</p>
+            <p className="profile-line">{profile?.headline || "Add a headline that tells people what you do."}</p>
+            <p className="profile-line">
+              {[profile?.currentCompany, profile?.location].filter(Boolean).join(" • ") || profile?.email || "No profile metadata yet"}
+            </p>
             <p className="profile-line">{profile?.bio || "Add a bio to strengthen your professional presence."}</p>
             <div className="profile-meta-row">
               <span className="soft-pill">Skills: {profile?.skills || "Add your skills"}</span>
             </div>
           </div>
+        </section>
+
+        <section className="feed-card activity-panel">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Network momentum</p>
+              <h3>{invitations.length > 0 ? "New invitations waiting for you" : "Build your circle intentionally"}</h3>
+            </div>
+            <Link to="/network" className="text-link">Open network</Link>
+          </div>
+
+          {loading && <p className="support-text">Loading dashboard...</p>}
+
+          {!loading && invitations.length === 0 && connections.length === 0 && (
+            <div className="empty-state">
+              <strong>No network activity yet</strong>
+              <p className="support-text">Complete your profile and start sending connection requests.</p>
+            </div>
+          )}
+
+          <div className="application-list">
+            {invitations.slice(0, 4).map((invitation) => (
+              <article key={invitation.id} className="application-row">
+                <div>
+                  <strong>{invitation.requester.name}</strong>
+                  <p>{invitation.requester.headline || "Professional invitation"}</p>
+                </div>
+                <span className="application-badge">Invitation</span>
+              </article>
+            ))}
+
+            {invitations.length === 0 &&
+              connections.slice(0, 4).map((connection) => (
+                <article key={connection.id} className="application-row">
+                  <div>
+                    <strong>{connection.name}</strong>
+                    <p>{connection.headline || "Connected professional"}</p>
+                  </div>
+                  <span className="application-badge">Connected</span>
+                </article>
+              ))}
+          </div>
+
+          {message && <p className="message error">{message}</p>}
         </section>
 
         <section className="feed-card activity-panel">
@@ -116,8 +172,6 @@ export default function DashboardPage() {
               View details
             </Link>
           </div>
-
-          {loading && <p className="support-text">Loading dashboard...</p>}
 
           {!loading && profile?.role === "USER" && applications.length === 0 && (
             <div className="empty-state">
@@ -146,7 +200,6 @@ export default function DashboardPage() {
                   <span className="application-badge">Applied {application.appliedDate}</span>
                 </article>
               ))}
-
             {profile?.role === "RECRUITER" &&
               myJobs.slice(0, 4).map((job) => (
                 <article key={job.id} className="application-row">
@@ -160,8 +213,6 @@ export default function DashboardPage() {
                 </article>
               ))}
           </div>
-
-          {message && <p className="message error">{message}</p>}
         </section>
       </div>
 
@@ -170,12 +221,12 @@ export default function DashboardPage() {
           <p className="sidebar-heading">Quick stats</p>
           <div className="mini-stat-grid">
             <div className="mini-stat">
-              <span>Network profile</span>
-              <strong>{profile?.bio ? "Strong" : "Needs bio"}</strong>
+              <span>Profile signal</span>
+              <strong>{profile?.headline && profile?.bio && profile?.skills ? "Strong" : "Incomplete"}</strong>
             </div>
             <div className="mini-stat">
-              <span>{profile?.role === "RECRUITER" ? "Listings" : "Applications"}</span>
-              <strong>{profile?.role === "RECRUITER" ? myJobs.length : applications.length}</strong>
+              <span>Connections</span>
+              <strong>{connections.length}</strong>
             </div>
           </div>
         </section>
@@ -183,9 +234,9 @@ export default function DashboardPage() {
         <section className="sidebar-card">
           <p className="sidebar-heading">Suggested next step</p>
           <p className="sidebar-text">
-            {profile?.role === "RECRUITER"
-              ? "Post a focused role with a clear company and location to attract better applicants."
-              : "Complete your bio and skills so recruiters can scan your profile faster."}
+            {profile?.headline && profile?.location
+              ? "Open My Network and send focused invitations so your professional graph starts compounding."
+              : "Add a headline and location so your professional identity reads clearly at first glance."}
           </p>
         </section>
       </aside>

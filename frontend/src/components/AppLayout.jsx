@@ -34,6 +34,9 @@ export default function AppLayout() {
             <NavLink to="/dashboard" end className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
               Home
             </NavLink>
+            <NavLink to="/network" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+              My Network
+            </NavLink>
             <NavLink to="/profile" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
               Profile
             </NavLink>
@@ -81,8 +84,8 @@ export default function AppLayout() {
               {(user?.name || "U").slice(0, 1).toUpperCase()}
             </div>
             <h2>{user?.name || "Professional"}</h2>
-            <p className="profile-role-label">{user?.role || "USER"}</p>
-            <p className="sidebar-text">{user?.bio || "Add your headline and bio to stand out to recruiters."}</p>
+            <p className="profile-role-label">{user?.headline || user?.role || "USER"}</p>
+            <p className="sidebar-text">{user?.bio || "Add your headline and about section to stand out to recruiters and peers."}</p>
             <div className="sidebar-pills">
               <span className="info-pill">{user?.skills || "Add skills"}</span>
             </div>
@@ -92,6 +95,7 @@ export default function AppLayout() {
             <p className="sidebar-heading">Workspace</p>
             <div className="sidebar-links">
               <SidebarLink to="/dashboard" end>Dashboard</SidebarLink>
+              <SidebarLink to="/network">My Network</SidebarLink>
               <SidebarLink to="/profile">Profile</SidebarLink>
               <SidebarLink to="/jobs">Jobs</SidebarLink>
               {isUserRole() && <SidebarLink to="/applications">My Applications</SidebarLink>}

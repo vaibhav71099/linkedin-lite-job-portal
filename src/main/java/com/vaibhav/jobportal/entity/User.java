@@ -31,6 +31,18 @@ public class User {
 	@Column(length = 1000)
 	private String bio;
 
+	@Column(length = 160)
+	private String headline;
+
+	@Column(length = 160)
+	private String location;
+
+	@Column(length = 160)
+	private String currentCompany;
+
+	@Column(length = 160)
+	private String education;
+
 	@Column(length = 1000)
 	private String skills;
 
