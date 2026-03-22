@@ -4,8 +4,6 @@ import com.vaibhav.jobportal.dto.ApiResponse;
 import com.vaibhav.jobportal.dto.AuthRequest;
 import com.vaibhav.jobportal.dto.AuthResponse;
 import com.vaibhav.jobportal.dto.RegisterRequest;
-import com.vaibhav.jobportal.dto.RegistrationOtpResponse;
-import com.vaibhav.jobportal.dto.VerifyOtpRequest;
 import com.vaibhav.jobportal.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,19 +24,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<ApiResponse<RegistrationOtpResponse>> register(@Valid @RequestBody RegisterRequest request) {
-		RegistrationOtpResponse response = authService.requestRegistrationOtp(request);
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ApiResponse<>(
-				true,
-				"OTP sent to email.",
-				response
-			));
-	}
-
-	@PostMapping("/register/verify")
-	public ResponseEntity<ApiResponse<AuthResponse>> verify(@Valid @RequestBody VerifyOtpRequest request) {
-		AuthResponse response = authService.verifyRegistrationOtp(request);
+	public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
+		AuthResponse response = authService.register(request);
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(new ApiResponse<>(true, response.getMessage(), response));
 	}
