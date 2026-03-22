@@ -31,7 +31,7 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(new ApiResponse<>(
 				true,
-				response.isPhoneOtpRequired() ? "OTP sent to email and phone." : "OTP sent to email.",
+				"OTP sent to email.",
 				response
 			));
 	}

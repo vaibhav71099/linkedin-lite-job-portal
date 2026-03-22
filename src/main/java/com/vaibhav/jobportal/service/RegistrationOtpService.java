@@ -31,7 +31,6 @@ public class RegistrationOtpService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final EmailOtpService emailOtpService;
-	private final SmsOtpService smsOtpService;
 	private final int otpExpiryMinutes;
 	private final SecureRandom secureRandom = new SecureRandom();
 
@@ -40,14 +39,12 @@ public class RegistrationOtpService {
 		UserRepository userRepository,
 		PasswordEncoder passwordEncoder,
 		EmailOtpService emailOtpService,
-		SmsOtpService smsOtpService,
 		@Value("${app.otp.expiry-minutes:10}") int otpExpiryMinutes
 	) {
 		this.pendingRepository = pendingRepository;
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.emailOtpService = emailOtpService;
-		this.smsOtpService = smsOtpService;
 		this.otpExpiryMinutes = otpExpiryMinutes;
 	}
 
@@ -82,7 +79,7 @@ public class RegistrationOtpService {
 
 		String emailOtp = generateOtp();
 		Instant expiresAt = Instant.now().plus(otpExpiryMinutes, ChronoUnit.MINUTES);
-		boolean phoneOtpRequired = smsOtpService.isConfigured();
+		boolean phoneOtpRequired = false;
 
 		pending.setName(request.getName().trim());
 		pending.setEmail(email);
@@ -95,13 +92,7 @@ public class RegistrationOtpService {
 		pending.setEmailVerified(Boolean.FALSE);
 		pending.setPhoneVerified(Boolean.FALSE);
 		pending.setUpdatedAt(Instant.now());
-		if (phoneOtpRequired) {
-			String phoneOtp = generateOtp();
-			pending.setPhoneOtpHash(passwordEncoder.encode(phoneOtp));
-			smsOtpService.sendOtp(phone, phoneOtp);
-		} else {
-			pending.setPhoneOtpHash(passwordEncoder.encode(SMS_OTP_DISABLED_SENTINEL));
-		}
+		pending.setPhoneOtpHash(passwordEncoder.encode(SMS_OTP_DISABLED_SENTINEL));
 
 		pendingRepository.save(pending);
 
