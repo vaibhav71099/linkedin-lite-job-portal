@@ -666,6 +666,29 @@ button {
   align-items: start;
 }
 
+.company-card {
+  display: grid;
+  gap: 18px;
+}
+
+.company-cover {
+  min-height: 140px;
+  padding: 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0a66c2, #8cc0ef);
+  color: white;
+}
+
+.company-cover-copy h3 {
+  margin: 6px 0;
+}
+
+.company-meta-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .application-row {
   display: flex;
   justify-content: space-between;

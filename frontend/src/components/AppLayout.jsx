@@ -37,6 +37,12 @@ export default function AppLayout() {
             <NavLink to="/network" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
               My Network
             </NavLink>
+            <NavLink to="/search" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+              Search
+            </NavLink>
+            <NavLink to="/companies" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+              Companies
+            </NavLink>
             <NavLink to="/messaging" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
               Messaging
             </NavLink>
@@ -102,6 +108,8 @@ export default function AppLayout() {
             <div className="sidebar-links">
               <SidebarLink to="/dashboard" end>Dashboard</SidebarLink>
               <SidebarLink to="/network">My Network</SidebarLink>
+              <SidebarLink to="/search">Search</SidebarLink>
+              <SidebarLink to="/companies">Companies</SidebarLink>
               <SidebarLink to="/messaging">Messaging</SidebarLink>
               <SidebarLink to="/notifications">Notifications</SidebarLink>
               <SidebarLink to="/profile">Profile</SidebarLink>

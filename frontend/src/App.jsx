@@ -7,6 +7,8 @@ import ProfilePage from "./pages/ProfilePage";
 import NetworkPage from "./pages/NetworkPage";
 import MessagingPage from "./pages/MessagingPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import CompaniesPage from "./pages/CompaniesPage";
+import SearchPage from "./pages/SearchPage";
 import AppliedJobsPage from "./pages/AppliedJobsPage";
 import RecruiterJobsPage from "./pages/RecruiterJobsPage";
 import AppLayout from "./components/AppLayout";
@@ -50,6 +52,8 @@ export default function App() {
         <Route path="/network" element={<NetworkPage />} />
         <Route path="/messaging" element={<MessagingPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/companies" element={<CompaniesPage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/jobs" element={<JobListPage />} />
         <Route

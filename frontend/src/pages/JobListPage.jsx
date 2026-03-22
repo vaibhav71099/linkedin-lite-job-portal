@@ -131,6 +131,9 @@ export default function JobListPage() {
               <div className="job-chip-group">
                 <span className="job-chip">Recruiter: {job.recruiterName || "Team"}</span>
                 <span className="job-chip">{job.location}</span>
+                <span className="job-chip">{job.employmentType || "Employment type not set"}</span>
+                <span className="job-chip">{job.seniorityLevel || "Seniority not set"}</span>
+                <span className="job-chip">{job.salaryRange || "Salary not listed"}</span>
               </div>
 
               {!isRecruiter() && (

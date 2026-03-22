@@ -32,6 +32,16 @@ public class Job {
 
 	private String location;
 
+	private String employmentType;
+
+	private String seniorityLevel;
+
+	private String salaryRange;
+
+	@ManyToOne
+	@JoinColumn(name = "company_profile_id")
+	private CompanyProfile companyProfile;
+
 	@ManyToOne
 	@JoinColumn(name = "recruiter_id", nullable = false)
 	private User recruiter;

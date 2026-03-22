@@ -24,4 +24,13 @@ public class JobRequest {
 	@NotBlank(message = "Location is required.")
 	@Size(max = 150, message = "Location must be at most 150 characters.")
 	private String location;
+
+	@Size(max = 80, message = "Employment type must be at most 80 characters.")
+	private String employmentType;
+
+	@Size(max = 80, message = "Seniority level must be at most 80 characters.")
+	private String seniorityLevel;
+
+	@Size(max = 120, message = "Salary range must be at most 120 characters.")
+	private String salaryRange;
 }

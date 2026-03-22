@@ -12,6 +12,10 @@ public class JobResponse {
 	private String description;
 	private String company;
 	private String location;
+	private String employmentType;
+	private String seniorityLevel;
+	private String salaryRange;
+	private Long companyProfileId;
 	private Long recruiterId;
 	private String recruiterName;
 }

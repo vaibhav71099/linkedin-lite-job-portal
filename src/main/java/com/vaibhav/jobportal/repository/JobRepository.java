@@ -11,9 +11,13 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
 	List<Job> findByRecruiterId(Long recruiterId);
 
+	List<Job> findByCompanyProfileId(Long companyProfileId);
+
 	Page<Job> findByTitleContainingIgnoreCaseAndLocationContainingIgnoreCase(
 		String title,
 		String location,
 		Pageable pageable
 	);
+
+	long countByCompanyProfileId(Long companyProfileId);
 }
