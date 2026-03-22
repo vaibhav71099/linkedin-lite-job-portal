@@ -34,5 +34,11 @@ services:
         value: true
       - key: SMTP_STARTTLS
         value: true
+      - key: SMTP_CONNECTION_TIMEOUT
+        value: 10000
+      - key: SMTP_TIMEOUT
+        value: 10000
+      - key: SMTP_WRITE_TIMEOUT
+        value: 10000
       - key: SMTP_FROM
         sync: false

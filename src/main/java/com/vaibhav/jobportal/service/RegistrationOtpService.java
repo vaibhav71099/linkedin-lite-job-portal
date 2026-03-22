@@ -6,6 +6,7 @@ import com.vaibhav.jobportal.entity.PendingRegistration;
 import com.vaibhav.jobportal.entity.Role;
 import com.vaibhav.jobportal.entity.User;
 import com.vaibhav.jobportal.exception.InvalidRoleException;
+import com.vaibhav.jobportal.exception.OtpDeliveryException;
 import com.vaibhav.jobportal.exception.OtpExpiredException;
 import com.vaibhav.jobportal.exception.OtpInvalidException;
 import com.vaibhav.jobportal.exception.PendingRegistrationNotFoundException;
@@ -104,7 +105,12 @@ public class RegistrationOtpService {
 
 		pendingRepository.save(pending);
 
-		emailOtpService.sendOtp(email, emailOtp);
+		try {
+			emailOtpService.sendOtp(email, emailOtp);
+		} catch (OtpDeliveryException ex) {
+			pendingRepository.delete(pending);
+			throw ex;
+		}
 		return phoneOtpRequired;
 	}
 
