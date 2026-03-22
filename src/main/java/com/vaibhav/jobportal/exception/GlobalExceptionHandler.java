@@ -88,7 +88,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(OtpDeliveryException.class)
 	public ResponseEntity<ApiResponse<Void>> handleOtpDelivery(OtpDeliveryException ex) {
 		return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-			.body(new ApiResponse<>(false, ex.getMessage(), null));
+			.body(new ApiResponse<>(false, "Unable to send OTP right now. Please try again shortly.", null));
 	}
 
 	@ExceptionHandler(ForbiddenOperationException.class)
