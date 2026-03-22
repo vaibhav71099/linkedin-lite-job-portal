@@ -67,6 +67,14 @@ public class NetworkService {
 			.toList();
 	}
 
+	public List<Long> getConnectionIdsIncludingSelf(String email) {
+		User currentUser = getUserByEmail(email);
+		return Stream.concat(
+			Stream.of(currentUser.getId()),
+			getConnectedUsers(currentUser).stream().map(User::getId)
+		).distinct().toList();
+	}
+
 	public ConnectionRequestResponse sendConnectionRequest(String email, Long userId) {
 		User requester = getUserByEmail(email);
 		User receiver = userRepository.findById(userId)

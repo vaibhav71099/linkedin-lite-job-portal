@@ -417,6 +417,90 @@ button {
   margin-top: 18px;
 }
 
+.composer-card,
+.social-post-card {
+  display: grid;
+  gap: 18px;
+}
+
+.composer-header,
+.social-post-header,
+.comment-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.social-post-copy {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.65;
+}
+
+.social-post-media {
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid #dfe6ee;
+}
+
+.social-post-media img {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+}
+
+.social-post-stats,
+.social-post-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.social-post-stats {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.active-action {
+  background: #eaf3fc;
+  color: var(--linkedin-blue-dark);
+}
+
+.comment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.comment-bubble {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #f4f7fa;
+}
+
+.comment-bubble p {
+  margin: 6px 0 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.comment-composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.comment-composer input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #c9d6e2;
+  border-radius: 999px;
+}
+
 .network-overview-grid,
 .network-grid {
   display: grid;

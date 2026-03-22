@@ -31,6 +31,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(new ApiResponse<>(false, ex.getMessage(), null));
 	}
 
+	@ExceptionHandler(PostNotFoundException.class)
+	public ResponseEntity<ApiResponse<Void>> handlePostNotFound(PostNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			.body(new ApiResponse<>(false, ex.getMessage(), null));
+	}
+
 	@ExceptionHandler(InvalidCredentialsException.class)
 	public ResponseEntity<ApiResponse<Void>> handleInvalidCredentials(InvalidCredentialsException ex) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
