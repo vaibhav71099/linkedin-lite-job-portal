@@ -3,6 +3,7 @@ package com.vaibhav.jobportal.service;
 import com.vaibhav.jobportal.dto.AuthRequest;
 import com.vaibhav.jobportal.dto.AuthResponse;
 import com.vaibhav.jobportal.dto.RegisterRequest;
+import com.vaibhav.jobportal.dto.RegistrationOtpResponse;
 import com.vaibhav.jobportal.dto.VerifyOtpRequest;
 import com.vaibhav.jobportal.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,8 +32,9 @@ public class AuthService {
 		this.registrationOtpService = registrationOtpService;
 	}
 
-	public void requestRegistrationOtp(RegisterRequest request) {
-		registrationOtpService.sendRegistrationOtps(request);
+	public RegistrationOtpResponse requestRegistrationOtp(RegisterRequest request) {
+		boolean phoneOtpRequired = registrationOtpService.sendRegistrationOtps(request);
+		return new RegistrationOtpResponse(phoneOtpRequired);
 	}
 
 	public AuthResponse verifyRegistrationOtp(VerifyOtpRequest request) {

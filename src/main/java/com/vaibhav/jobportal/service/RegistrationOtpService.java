@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class RegistrationOtpService {
 
 	private static final int OTP_LENGTH = 6;
+	private static final String SMS_OTP_DISABLED_SENTINEL = "SMS_OTP_DISABLED";
 
 	private final PendingRegistrationRepository pendingRepository;
 	private final UserRepository userRepository;
@@ -49,7 +50,7 @@ public class RegistrationOtpService {
 		this.otpExpiryMinutes = otpExpiryMinutes;
 	}
 
-	public void sendRegistrationOtps(RegisterRequest request) {
+	public boolean sendRegistrationOtps(RegisterRequest request) {
 		String email = normalizeEmail(request.getEmail());
 		String phone = normalizePhone(request.getPhone());
 
@@ -79,8 +80,8 @@ public class RegistrationOtpService {
 		}
 
 		String emailOtp = generateOtp();
-		String phoneOtp = generateOtp();
 		Instant expiresAt = Instant.now().plus(otpExpiryMinutes, ChronoUnit.MINUTES);
+		boolean phoneOtpRequired = smsOtpService.isConfigured();
 
 		pending.setName(request.getName().trim());
 		pending.setEmail(email);
@@ -88,17 +89,23 @@ public class RegistrationOtpService {
 		pending.setRole(request.getRole());
 		pending.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 		pending.setEmailOtpHash(passwordEncoder.encode(emailOtp));
-		pending.setPhoneOtpHash(passwordEncoder.encode(phoneOtp));
 		pending.setEmailOtpExpiresAt(expiresAt);
 		pending.setPhoneOtpExpiresAt(expiresAt);
 		pending.setEmailVerified(Boolean.FALSE);
 		pending.setPhoneVerified(Boolean.FALSE);
 		pending.setUpdatedAt(Instant.now());
+		if (phoneOtpRequired) {
+			String phoneOtp = generateOtp();
+			pending.setPhoneOtpHash(passwordEncoder.encode(phoneOtp));
+			smsOtpService.sendOtp(phone, phoneOtp);
+		} else {
+			pending.setPhoneOtpHash(passwordEncoder.encode(SMS_OTP_DISABLED_SENTINEL));
+		}
 
 		pendingRepository.save(pending);
 
 		emailOtpService.sendOtp(email, emailOtp);
-		smsOtpService.sendOtp(phone, phoneOtp);
+		return phoneOtpRequired;
 	}
 
 	public User verifyRegistrationOtps(VerifyOtpRequest request) {
@@ -113,14 +120,18 @@ public class RegistrationOtpService {
 		}
 
 		Instant now = Instant.now();
-		if (pending.getEmailOtpExpiresAt().isBefore(now) || pending.getPhoneOtpExpiresAt().isBefore(now)) {
+		if (pending.getEmailOtpExpiresAt().isBefore(now)) {
 			throw new OtpExpiredException("OTP has expired. Please request a new one.");
 		}
 
 		if (!passwordEncoder.matches(request.getEmailOtp(), pending.getEmailOtpHash())) {
 			throw new OtpInvalidException("Invalid email OTP.");
 		}
-		if (!passwordEncoder.matches(request.getPhoneOtp(), pending.getPhoneOtpHash())) {
+		boolean phoneOtpRequired = isPhoneOtpRequired(pending);
+		if (phoneOtpRequired && pending.getPhoneOtpExpiresAt().isBefore(now)) {
+			throw new OtpExpiredException("OTP has expired. Please request a new one.");
+		}
+		if (phoneOtpRequired && !passwordEncoder.matches(normalizeOtp(request.getPhoneOtp()), pending.getPhoneOtpHash())) {
 			throw new OtpInvalidException("Invalid phone OTP.");
 		}
 
@@ -140,7 +151,7 @@ public class RegistrationOtpService {
 		user.setRole(pending.getRole());
 		user.setPassword(pending.getPasswordHash());
 		user.setEmailVerified(Boolean.TRUE);
-		user.setPhoneVerified(Boolean.TRUE);
+		user.setPhoneVerified(phoneOtpRequired);
 		User savedUser = userRepository.save(user);
 
 		pendingRepository.delete(pending);
@@ -159,5 +170,13 @@ public class RegistrationOtpService {
 
 	private String normalizePhone(String phone) {
 		return phone == null ? "" : phone.trim();
+	}
+
+	private String normalizeOtp(String otp) {
+		return otp == null ? "" : otp.trim();
+	}
+
+	private boolean isPhoneOtpRequired(PendingRegistration pending) {
+		return !passwordEncoder.matches(SMS_OTP_DISABLED_SENTINEL, pending.getPhoneOtpHash());
 	}
 }

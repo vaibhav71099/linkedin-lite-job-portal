@@ -4,6 +4,7 @@ import com.vaibhav.jobportal.dto.ApiResponse;
 import com.vaibhav.jobportal.dto.AuthRequest;
 import com.vaibhav.jobportal.dto.AuthResponse;
 import com.vaibhav.jobportal.dto.RegisterRequest;
+import com.vaibhav.jobportal.dto.RegistrationOtpResponse;
 import com.vaibhav.jobportal.dto.VerifyOtpRequest;
 import com.vaibhav.jobportal.service.AuthService;
 import jakarta.validation.Valid;
@@ -25,10 +26,14 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody RegisterRequest request) {
-		authService.requestRegistrationOtp(request);
+	public ResponseEntity<ApiResponse<RegistrationOtpResponse>> register(@Valid @RequestBody RegisterRequest request) {
+		RegistrationOtpResponse response = authService.requestRegistrationOtp(request);
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ApiResponse<>(true, "OTP sent to email and phone.", null));
+			.body(new ApiResponse<>(
+				true,
+				response.isPhoneOtpRequired() ? "OTP sent to email and phone." : "OTP sent to email.",
+				response
+			));
 	}
 
 	@PostMapping("/register/verify")

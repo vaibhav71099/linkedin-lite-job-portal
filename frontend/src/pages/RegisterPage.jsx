@@ -19,6 +19,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState("request");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [phoneOtpRequired, setPhoneOtpRequired] = useState(true);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -27,15 +28,21 @@ export default function RegisterPage() {
 
     try {
       if (step === "request") {
-        await api.post("/auth/register", formData);
+        const response = await api.post("/auth/register", formData);
+        const requiresPhoneOtp = response.data?.data?.phoneOtpRequired ?? true;
+        setPhoneOtpRequired(requiresPhoneOtp);
         setStep("verify");
-        setMessage("OTP sent to your email and phone. Enter both codes to continue.");
+        setMessage(
+          requiresPhoneOtp
+            ? "OTP sent to your email and phone. Enter both codes to continue."
+            : "OTP sent to your email. Enter the email code to continue."
+        );
       } else {
         const response = await api.post("/auth/register/verify", {
           email: formData.email,
           phone: formData.phone,
           emailOtp: otpData.emailOtp,
-          phoneOtp: otpData.phoneOtp
+          phoneOtp: phoneOtpRequired ? otpData.phoneOtp : ""
         });
         saveToken(response.data.data.token);
         saveUser(response.data.data.user);
@@ -53,8 +60,14 @@ export default function RegisterPage() {
     setMessage("");
 
     try {
-      await api.post("/auth/register", formData);
-      setMessage("New OTP sent. Please check your email and phone.");
+      const response = await api.post("/auth/register", formData);
+      const requiresPhoneOtp = response.data?.data?.phoneOtpRequired ?? true;
+      setPhoneOtpRequired(requiresPhoneOtp);
+      setMessage(
+        requiresPhoneOtp
+          ? "New OTP sent. Please check your email and phone."
+          : "New OTP sent. Please check your email."
+      );
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to resend OTP.");
     } finally {
@@ -145,16 +158,18 @@ export default function RegisterPage() {
                 />
               </label>
 
-              <label>
-                <span>Phone OTP</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={otpData.phoneOtp}
-                  onChange={(event) => setOtpData({ ...otpData, phoneOtp: event.target.value })}
-                  required
-                />
-              </label>
+              {phoneOtpRequired && (
+                <label>
+                  <span>Phone OTP</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={otpData.phoneOtp}
+                    onChange={(event) => setOtpData({ ...otpData, phoneOtp: event.target.value })}
+                    required
+                  />
+                </label>
+              )}
             </>
           )}
 

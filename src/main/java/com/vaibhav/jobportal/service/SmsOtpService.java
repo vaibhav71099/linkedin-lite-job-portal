@@ -25,9 +25,7 @@ public class SmsOtpService {
 	}
 
 	public void sendOtp(String phone, String otp) {
-		if (accountSid == null || accountSid.isBlank()
-			|| authToken == null || authToken.isBlank()
-			|| fromNumber == null || fromNumber.isBlank()) {
+		if (!isConfigured()) {
 			throw new OtpDeliveryException("SMS service is not configured.");
 		}
 
@@ -37,5 +35,11 @@ public class SmsOtpService {
 			new PhoneNumber(fromNumber),
 			"Your OTP for Job Portal is: " + otp + ". It expires soon."
 		).create();
+	}
+
+	public boolean isConfigured() {
+		return accountSid != null && !accountSid.isBlank()
+			&& authToken != null && !authToken.isBlank()
+			&& fromNumber != null && !fromNumber.isBlank();
 	}
 }
