@@ -50,28 +50,17 @@ public class RegistrationOtpService {
 
 	public boolean sendRegistrationOtps(RegisterRequest request) {
 		String email = normalizeEmail(request.getEmail());
-		String phone = normalizePhone(request.getPhone());
 
 		if (userRepository.existsByEmail(email)) {
 			throw new UserAlreadyExistsException("User with this email already exists.");
-		}
-		if (userRepository.existsByPhone(phone)) {
-			throw new UserAlreadyExistsException("User with this phone number already exists.");
 		}
 		if (request.getRole() == Role.ADMIN) {
 			throw new InvalidRoleException("Admin registration is not allowed.");
 		}
 
 		PendingRegistration pending = pendingRepository.findByEmail(email).orElse(null);
-		if (pending != null && !pending.getPhone().equals(phone)) {
-			throw new UserAlreadyExistsException("A pending registration already exists for this email.");
-		}
-		PendingRegistration pendingByPhone = pendingRepository.findByPhone(phone).orElse(null);
-		if (pendingByPhone != null && (pending == null || !pendingByPhone.getEmail().equals(email))) {
-			throw new UserAlreadyExistsException("A pending registration already exists for this phone number.");
-		}
 		if (pending == null) {
-			pending = pendingByPhone != null ? pendingByPhone : new PendingRegistration();
+			pending = new PendingRegistration();
 			if (pending.getCreatedAt() == null) {
 				pending.setCreatedAt(Instant.now());
 			}
@@ -83,7 +72,7 @@ public class RegistrationOtpService {
 
 		pending.setName(request.getName().trim());
 		pending.setEmail(email);
-		pending.setPhone(phone);
+		pending.setPhone(null);
 		pending.setRole(request.getRole());
 		pending.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 		pending.setEmailOtpHash(passwordEncoder.encode(emailOtp));
@@ -107,14 +96,9 @@ public class RegistrationOtpService {
 
 	public User verifyRegistrationOtps(VerifyOtpRequest request) {
 		String email = normalizeEmail(request.getEmail());
-		String phone = normalizePhone(request.getPhone());
 
 		PendingRegistration pending = pendingRepository.findByEmail(email)
 			.orElseThrow(() -> new PendingRegistrationNotFoundException("No pending registration found."));
-
-		if (!pending.getPhone().equals(phone)) {
-			throw new OtpInvalidException("Phone number does not match the pending registration.");
-		}
 
 		Instant now = Instant.now();
 		if (pending.getEmailOtpExpiresAt().isBefore(now)) {
@@ -124,19 +108,9 @@ public class RegistrationOtpService {
 		if (!passwordEncoder.matches(request.getEmailOtp(), pending.getEmailOtpHash())) {
 			throw new OtpInvalidException("Invalid email OTP.");
 		}
-		boolean phoneOtpRequired = isPhoneOtpRequired(pending);
-		if (phoneOtpRequired && pending.getPhoneOtpExpiresAt().isBefore(now)) {
-			throw new OtpExpiredException("OTP has expired. Please request a new one.");
-		}
-		if (phoneOtpRequired && !passwordEncoder.matches(normalizeOtp(request.getPhoneOtp()), pending.getPhoneOtpHash())) {
-			throw new OtpInvalidException("Invalid phone OTP.");
-		}
 
 		if (userRepository.existsByEmail(email)) {
 			throw new UserAlreadyExistsException("User with this email already exists.");
-		}
-		if (userRepository.existsByPhone(phone)) {
-			throw new UserAlreadyExistsException("User with this phone number already exists.");
 		}
 
 		User user = new User();
@@ -144,11 +118,11 @@ public class RegistrationOtpService {
 		user.setBio("");
 		user.setSkills("");
 		user.setEmail(pending.getEmail());
-		user.setPhone(pending.getPhone());
+		user.setPhone(null);
 		user.setRole(pending.getRole());
 		user.setPassword(pending.getPasswordHash());
 		user.setEmailVerified(Boolean.TRUE);
-		user.setPhoneVerified(phoneOtpRequired);
+		user.setPhoneVerified(Boolean.FALSE);
 		User savedUser = userRepository.save(user);
 
 		pendingRepository.delete(pending);
@@ -165,15 +139,4 @@ public class RegistrationOtpService {
 		return email == null ? "" : email.trim().toLowerCase(Locale.US);
 	}
 
-	private String normalizePhone(String phone) {
-		return phone == null ? "" : phone.trim();
-	}
-
-	private String normalizeOtp(String otp) {
-		return otp == null ? "" : otp.trim();
-	}
-
-	private boolean isPhoneOtpRequired(PendingRegistration pending) {
-		return !passwordEncoder.matches(SMS_OTP_DISABLED_SENTINEL, pending.getPhoneOtpHash());
-	}
 }

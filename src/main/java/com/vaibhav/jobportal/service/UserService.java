@@ -29,16 +29,13 @@ public class UserService {
 		if (userRepository.existsByEmail(request.getEmail())) {
 			throw new UserAlreadyExistsException("User with this email already exists.");
 		}
-		if (userRepository.existsByPhone(request.getPhone())) {
-			throw new UserAlreadyExistsException("User with this phone number already exists.");
-		}
 
 		User user = new User();
 		user.setName(request.getName());
 		user.setBio("");
 		user.setSkills("");
 		user.setEmail(request.getEmail());
-		user.setPhone(request.getPhone());
+		user.setPhone(null);
 		if (request.getRole() == Role.ADMIN) {
 			throw new InvalidRoleException("Admin registration is not allowed.");
 		}
