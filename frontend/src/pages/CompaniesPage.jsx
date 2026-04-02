@@ -29,8 +29,8 @@ export default function CompaniesPage() {
   }
 
   return (
-    <section className="page-section">
-      <div className="content-feed">
+    <section className="page-section row g-4">
+      <div className="content-feed col-12 col-xl-8">
         <section className="feed-card">
           <div className="section-heading">
             <div>
@@ -42,14 +42,15 @@ export default function CompaniesPage() {
             </div>
           </div>
 
-          <form className="comment-composer" onSubmit={handleSearch}>
+          <form className="comment-composer d-flex gap-2" onSubmit={handleSearch}>
             <input
               type="text"
+              className="form-control"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search companies or industries"
             />
-            <button type="submit" className="primary-button inline-button">Search</button>
+            <button type="submit" className="btn btn-primary btn-sm">Search</button>
           </form>
         </section>
 
@@ -93,7 +94,7 @@ export default function CompaniesPage() {
         )}
       </div>
 
-      <aside className="right-rail">
+      <aside className="right-rail col-12 col-xl-4">
         <section className="sidebar-card">
           <p className="sidebar-heading">Why company pages matter</p>
           <p className="sidebar-text">

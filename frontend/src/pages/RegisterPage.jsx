@@ -32,8 +32,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <section className="auth-page">
-      <section className="auth-panel auth-card">
+    <section className="auth-page d-flex align-items-center justify-content-center min-vh-100 bg-light">
+      <section className="auth-panel auth-card card shadow-sm p-4">
         <div>
           <div className="auth-brand">
             <div className="linkedin-logo">in</div>
@@ -43,40 +43,44 @@ export default function RegisterPage() {
           <p className="support-text">Create an account and start applying or hiring.</p>
         </div>
 
-        <form className="form-grid" onSubmit={handleSubmit}>
-          <label>
-            <span>Name</span>
+        <form className="form-grid d-grid gap-3" onSubmit={handleSubmit}>
+          <label className="d-grid gap-2">
+            <span className="form-label">Name</span>
             <input
               type="text"
+              className="form-control"
               value={formData.name}
               onChange={(event) => setFormData({ ...formData, name: event.target.value })}
               required
             />
           </label>
 
-          <label>
-            <span>Email</span>
+          <label className="d-grid gap-2">
+            <span className="form-label">Email</span>
             <input
               type="email"
+              className="form-control"
               value={formData.email}
               onChange={(event) => setFormData({ ...formData, email: event.target.value })}
               required
             />
           </label>
 
-          <label>
-            <span>Password</span>
+          <label className="d-grid gap-2">
+            <span className="form-label">Password</span>
             <input
               type="password"
+              className="form-control"
               value={formData.password}
               onChange={(event) => setFormData({ ...formData, password: event.target.value })}
               required
             />
           </label>
 
-          <label>
-            <span>Role</span>
+          <label className="d-grid gap-2">
+            <span className="form-label">Role</span>
             <select
+              className="form-select"
               value={formData.role}
               onChange={(event) => setFormData({ ...formData, role: event.target.value })}
             >
@@ -85,15 +89,15 @@ export default function RegisterPage() {
             </select>
           </label>
 
-          <button type="submit" className="primary-button" disabled={loading}>
+          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
-        {message && <p className="message error">{message}</p>}
+        {message && <div className="alert alert-danger mb-0">{message}</div>}
 
-        <p className="switch-link">
-          Already on LinkedIn Lite? <Link to="/login">Sign in</Link>
+        <p className="switch-link text-center">
+          Already on LinkedIn Lite? <Link className="link-primary" to="/login">Sign in</Link>
         </p>
       </section>
     </section>

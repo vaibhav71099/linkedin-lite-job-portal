@@ -32,7 +32,7 @@ function PersonCard({ person, actionLabel, onAction, actionDisabled = false }) {
       {onAction && (
         <button
           type="button"
-          className="ghost-button inline-button"
+          className="btn btn-outline-primary btn-sm w-100"
           disabled={actionDisabled}
           onClick={onAction}
         >
@@ -102,8 +102,8 @@ export default function NetworkPage() {
   }
 
   return (
-    <section className="page-section">
-      <div className="content-feed">
+    <section className="page-section row g-4">
+      <div className="content-feed col-12 col-xl-8">
         <section className="feed-card">
           <div className="section-heading">
             <div>
@@ -168,7 +168,7 @@ export default function NetworkPage() {
                 <div className="network-actions">
                   <button
                     type="button"
-                    className="primary-button inline-button"
+                    className="btn btn-primary btn-sm"
                     disabled={busyId === invitation.id}
                     onClick={() => handleInvitation(invitation.id, "accept")}
                   >
@@ -176,7 +176,7 @@ export default function NetworkPage() {
                   </button>
                   <button
                     type="button"
-                    className="ghost-button inline-button"
+                    className="btn btn-outline-secondary btn-sm"
                     disabled={busyId === invitation.id}
                     onClick={() => handleInvitation(invitation.id, "ignore")}
                   >
@@ -217,7 +217,7 @@ export default function NetworkPage() {
         </section>
       </div>
 
-      <aside className="right-rail">
+      <aside className="right-rail col-12 col-xl-4">
         <section className="sidebar-card">
           <p className="sidebar-heading">Connection strategy</p>
           <p className="sidebar-text">

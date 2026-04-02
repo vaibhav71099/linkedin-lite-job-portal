@@ -92,6 +92,7 @@ export default function JobListPage() {
             <span>Search jobs</span>
             <input
               type="text"
+              className="form-control"
               value={searchTerm}
               placeholder="Search title, company, or location"
               onChange={(event) => setSearchTerm(event.target.value)}
@@ -139,7 +140,7 @@ export default function JobListPage() {
               {!isRecruiter() && (
                 <button
                   type="button"
-                  className="primary-button"
+                  className="btn btn-primary"
                   onClick={() => handleApply(job.id)}
                   disabled={applyingId === job.id}
                 >

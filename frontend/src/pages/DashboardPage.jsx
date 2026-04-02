@@ -144,8 +144,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <section className="page-section">
-      <div className="content-feed">
+    <section className="page-section row g-4">
+      <div className="content-feed col-12 col-xl-8">
         <section className="feed-card hero-card">
           <div className="hero-copy">
             <p className="eyebrow">Professional home</p>
@@ -157,10 +157,10 @@ export default function DashboardPage() {
             </p>
 
             <div className="hero-actions">
-              <Link to="/profile" className="primary-button inline-button">
+              <Link to="/profile" className="btn btn-primary btn-sm">
                 Edit profile
               </Link>
-              <Link to="/network" className="ghost-button inline-button">
+              <Link to="/network" className="btn btn-outline-primary btn-sm">
                 Grow network
               </Link>
             </div>
@@ -191,11 +191,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <form className="form-grid" onSubmit={handleCreatePost}>
+          <form className="form-grid d-grid gap-3" onSubmit={handleCreatePost}>
             <label>
-              <span>Start a post</span>
+              <span className="form-label">Start a post</span>
               <textarea
                 rows="4"
+                className="form-control"
                 value={composer.content}
                 onChange={(event) => setComposer({ ...composer, content: event.target.value })}
                 placeholder="Share a milestone, hiring update, product launch, or lesson learned."
@@ -204,16 +205,17 @@ export default function DashboardPage() {
             </label>
 
             <label>
-              <span>Image URL</span>
+              <span className="form-label">Image URL</span>
               <input
                 type="url"
+                className="form-control"
                 value={composer.imageUrl}
                 onChange={(event) => setComposer({ ...composer, imageUrl: event.target.value })}
                 placeholder="Optional image URL for richer posts"
               />
             </label>
 
-            <button type="submit" className="primary-button" disabled={posting}>
+            <button type="submit" className="btn btn-primary" disabled={posting}>
               {posting ? "Posting..." : "Post"}
             </button>
           </form>
@@ -260,7 +262,7 @@ export default function DashboardPage() {
               <div className="social-post-actions">
                 <button
                   type="button"
-                  className={`ghost-button inline-button ${post.reactedByCurrentUser ? "active-action" : ""}`}
+                  className={`btn btn-outline-secondary btn-sm ${post.reactedByCurrentUser ? "active-action" : ""}`}
                   disabled={busyPostId === post.id}
                   onClick={() => handleReact(post.id)}
                 >
@@ -282,9 +284,10 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              <div className="comment-composer">
+              <div className="comment-composer d-flex gap-2">
                 <input
                   type="text"
+                  className="form-control"
                   value={commentDrafts[post.id] || ""}
                   onChange={(event) =>
                     setCommentDrafts((current) => ({ ...current, [post.id]: event.target.value }))
@@ -293,7 +296,7 @@ export default function DashboardPage() {
                 />
                 <button
                   type="button"
-                  className="ghost-button inline-button"
+                  className="btn btn-outline-secondary btn-sm"
                   disabled={busyPostId === post.id}
                   onClick={() => handleComment(post.id)}
                 >
@@ -304,7 +307,7 @@ export default function DashboardPage() {
           ))}
       </div>
 
-      <aside className="right-rail">
+      <aside className="right-rail col-12 col-xl-4">
         <section className="sidebar-card">
           <p className="sidebar-heading">Profile signal</p>
           <div className="mini-stat-grid">

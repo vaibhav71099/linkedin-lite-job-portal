@@ -97,8 +97,8 @@ export default function MessagingPage() {
   }
 
   return (
-    <section className="page-section">
-      <div className="content-feed">
+    <section className="page-section row g-4">
+      <div className="content-feed col-12 col-xl-8">
         <section className="feed-card messaging-shell">
           <div className="messaging-sidebar">
             <div className="section-heading">
@@ -163,14 +163,15 @@ export default function MessagingPage() {
             </div>
 
             {selectedUser && (
-              <form className="comment-composer" onSubmit={handleSend}>
+              <form className="comment-composer d-flex gap-2" onSubmit={handleSend}>
                 <input
                   type="text"
+                  className="form-control"
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder={`Message ${selectedUser.name}`}
                 />
-                <button type="submit" className="primary-button inline-button" disabled={sending}>
+                <button type="submit" className="btn btn-primary btn-sm" disabled={sending}>
                   {sending ? "Sending..." : "Send"}
                 </button>
               </form>
@@ -214,7 +215,7 @@ export default function MessagingPage() {
         </section>
       </div>
 
-      <aside className="right-rail">
+      <aside className="right-rail col-12 col-xl-4">
         <section className="sidebar-card">
           <p className="sidebar-heading">Inbox rhythm</p>
           <p className="sidebar-text">

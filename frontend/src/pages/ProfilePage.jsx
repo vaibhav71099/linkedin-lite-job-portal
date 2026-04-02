@@ -107,11 +107,12 @@ export default function ProfilePage() {
         {loading ? (
           <p className="support-text">Loading profile...</p>
         ) : (
-          <form className="form-grid" onSubmit={handleSubmit}>
+          <form className="form-grid d-grid gap-3" onSubmit={handleSubmit}>
             <label>
               <span>Name</span>
               <input
                 type="text"
+                className="form-control"
                 value={formData.name}
                 onChange={(event) => setFormData({ ...formData, name: event.target.value })}
                 required
@@ -122,6 +123,7 @@ export default function ProfilePage() {
               <span>Email</span>
               <input
                 type="email"
+                className="form-control"
                 value={formData.email}
                 onChange={(event) => setFormData({ ...formData, email: event.target.value })}
                 required
@@ -132,6 +134,7 @@ export default function ProfilePage() {
               <span>Headline</span>
               <input
                 type="text"
+                className="form-control"
                 value={formData.headline}
                 onChange={(event) => setFormData({ ...formData, headline: event.target.value })}
                 placeholder="Software engineer building customer-facing products"
@@ -142,6 +145,7 @@ export default function ProfilePage() {
               <span>Location</span>
               <input
                 type="text"
+                className="form-control"
                 value={formData.location}
                 onChange={(event) => setFormData({ ...formData, location: event.target.value })}
                 placeholder="Pune, Maharashtra, India"
@@ -152,6 +156,7 @@ export default function ProfilePage() {
               <span>Current company</span>
               <input
                 type="text"
+                className="form-control"
                 value={formData.currentCompany}
                 onChange={(event) => setFormData({ ...formData, currentCompany: event.target.value })}
                 placeholder="Current workplace or venture"
@@ -162,6 +167,7 @@ export default function ProfilePage() {
               <span>Education</span>
               <input
                 type="text"
+                className="form-control"
                 value={formData.education}
                 onChange={(event) => setFormData({ ...formData, education: event.target.value })}
                 placeholder="University or program"
@@ -172,6 +178,7 @@ export default function ProfilePage() {
               <span>About</span>
               <textarea
                 rows="5"
+                className="form-control"
                 value={formData.bio}
                 onChange={(event) => setFormData({ ...formData, bio: event.target.value })}
                 placeholder="Write a short professional summary"
@@ -182,13 +189,14 @@ export default function ProfilePage() {
               <span>Skills</span>
               <textarea
                 rows="4"
+                className="form-control"
                 value={formData.skills}
                 onChange={(event) => setFormData({ ...formData, skills: event.target.value })}
                 placeholder="Spring Boot, React, MySQL, REST APIs"
               />
             </label>
 
-            <button type="submit" className="primary-button" disabled={saving}>
+            <button type="submit" className="btn btn-primary" disabled={saving}>
               {saving ? "Saving..." : "Save Profile"}
             </button>
           </form>

@@ -127,11 +127,12 @@ export default function RecruiterJobsPage() {
           This company profile feeds your recruiter presence, search results, and company discovery across the product.
         </p>
 
-        <form className="form-grid" onSubmit={handleCompanySubmit}>
+        <form className="form-grid d-grid gap-3" onSubmit={handleCompanySubmit}>
           <label>
             <span>Company name</span>
             <input
               type="text"
+              className="form-control"
               value={companyForm.name}
               onChange={(event) => setCompanyForm({ ...companyForm, name: event.target.value })}
               required
@@ -142,6 +143,7 @@ export default function RecruiterJobsPage() {
             <span>Slogan</span>
             <input
               type="text"
+              className="form-control"
               value={companyForm.slogan}
               onChange={(event) => setCompanyForm({ ...companyForm, slogan: event.target.value })}
             />
@@ -151,6 +153,7 @@ export default function RecruiterJobsPage() {
             <span>Industry</span>
             <input
               type="text"
+              className="form-control"
               value={companyForm.industry}
               onChange={(event) => setCompanyForm({ ...companyForm, industry: event.target.value })}
             />
@@ -160,6 +163,7 @@ export default function RecruiterJobsPage() {
             <span>Company size</span>
             <input
               type="text"
+              className="form-control"
               value={companyForm.size}
               onChange={(event) => setCompanyForm({ ...companyForm, size: event.target.value })}
             />
@@ -169,6 +173,7 @@ export default function RecruiterJobsPage() {
             <span>Headquarters</span>
             <input
               type="text"
+              className="form-control"
               value={companyForm.headquarters}
               onChange={(event) => setCompanyForm({ ...companyForm, headquarters: event.target.value })}
             />
@@ -178,6 +183,7 @@ export default function RecruiterJobsPage() {
             <span>Website</span>
             <input
               type="text"
+              className="form-control"
               value={companyForm.website}
               onChange={(event) => setCompanyForm({ ...companyForm, website: event.target.value })}
             />
@@ -187,12 +193,13 @@ export default function RecruiterJobsPage() {
             <span>About</span>
             <textarea
               rows="4"
+              className="form-control"
               value={companyForm.about}
               onChange={(event) => setCompanyForm({ ...companyForm, about: event.target.value })}
             />
           </label>
 
-          <button type="submit" className="primary-button" disabled={savingCompany}>
+          <button type="submit" className="btn btn-primary" disabled={savingCompany}>
             {savingCompany ? "Saving..." : "Save Company"}
           </button>
         </form>
@@ -205,11 +212,12 @@ export default function RecruiterJobsPage() {
           Publish roles, keep them organized, and review applicants from a single workflow.
         </p>
 
-        <form className="form-grid" onSubmit={handleSubmit}>
+        <form className="form-grid d-grid gap-3" onSubmit={handleSubmit}>
           <label>
             <span>Job Title</span>
             <input
               type="text"
+              className="form-control"
               value={formData.title}
               onChange={(event) => setFormData({ ...formData, title: event.target.value })}
               required
@@ -220,6 +228,7 @@ export default function RecruiterJobsPage() {
             <span>Description</span>
             <textarea
               rows="5"
+              className="form-control"
               value={formData.description}
               onChange={(event) => setFormData({ ...formData, description: event.target.value })}
               required
@@ -230,6 +239,7 @@ export default function RecruiterJobsPage() {
             <span>Company</span>
             <input
               type="text"
+              className="form-control"
               value={formData.company}
               onChange={(event) => setFormData({ ...formData, company: event.target.value })}
               required
@@ -240,6 +250,7 @@ export default function RecruiterJobsPage() {
             <span>Location</span>
             <input
               type="text"
+              className="form-control"
               value={formData.location}
               onChange={(event) => setFormData({ ...formData, location: event.target.value })}
               required
@@ -250,6 +261,7 @@ export default function RecruiterJobsPage() {
             <span>Employment type</span>
             <input
               type="text"
+              className="form-control"
               value={formData.employmentType}
               onChange={(event) => setFormData({ ...formData, employmentType: event.target.value })}
               placeholder="Full-time, Contract, Hybrid"
@@ -260,6 +272,7 @@ export default function RecruiterJobsPage() {
             <span>Seniority level</span>
             <input
               type="text"
+              className="form-control"
               value={formData.seniorityLevel}
               onChange={(event) => setFormData({ ...formData, seniorityLevel: event.target.value })}
               placeholder="Entry level, Mid-Senior, Staff"
@@ -270,13 +283,14 @@ export default function RecruiterJobsPage() {
             <span>Salary range</span>
             <input
               type="text"
+              className="form-control"
               value={formData.salaryRange}
               onChange={(event) => setFormData({ ...formData, salaryRange: event.target.value })}
               placeholder="12-18 LPA"
             />
           </label>
 
-          <button type="submit" className="primary-button" disabled={saving}>
+          <button type="submit" className="btn btn-primary" disabled={saving}>
             {saving ? "Posting..." : "Post Job"}
           </button>
         </form>
@@ -326,7 +340,7 @@ export default function RecruiterJobsPage() {
               </div>
               <button
                 type="button"
-                className="ghost-button"
+                className="btn btn-outline-secondary btn-sm"
                 onClick={() => handleViewApplicants(job.id)}
               >
                 View Applicants

@@ -27,8 +27,8 @@ export default function LoginPage() {
   }
 
   return (
-    <section className="auth-page">
-      <section className="auth-panel auth-card">
+    <section className="auth-page d-flex align-items-center justify-content-center min-vh-100 bg-light">
+      <section className="auth-panel auth-card card shadow-sm p-4">
         <div>
           <div className="auth-brand">
             <div className="linkedin-logo">in</div>
@@ -38,36 +38,38 @@ export default function LoginPage() {
           <p className="support-text">Stay updated on your professional world.</p>
         </div>
 
-        <form className="form-grid" onSubmit={handleSubmit}>
-          <label>
-            <span>Email</span>
+        <form className="form-grid d-grid gap-3" onSubmit={handleSubmit}>
+          <label className="d-grid gap-2">
+            <span className="form-label">Email</span>
             <input
               type="email"
+              className="form-control"
               value={formData.email}
               onChange={(event) => setFormData({ ...formData, email: event.target.value })}
               required
             />
           </label>
 
-          <label>
-            <span>Password</span>
+          <label className="d-grid gap-2">
+            <span className="form-label">Password</span>
             <input
               type="password"
+              className="form-control"
               value={formData.password}
               onChange={(event) => setFormData({ ...formData, password: event.target.value })}
               required
             />
           </label>
 
-          <button type="submit" className="primary-button" disabled={loading}>
+          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        {message && <p className="message error">{message}</p>}
+        {message && <div className="alert alert-danger mb-0">{message}</div>}
 
-        <p className="switch-link">
-          New to LinkedIn Lite? <Link to="/register">Join now</Link>
+        <p className="switch-link text-center">
+          New to LinkedIn Lite? <Link className="link-primary" to="/register">Join now</Link>
         </p>
       </section>
     </section>
