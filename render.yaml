@@ -11,10 +11,20 @@ services:
     plan: free
     autoDeploy: true
     envVars:
-      - key: DATABASE_URL
+      - key: DB_VENDOR
+        value: postgresql
+      - key: DB_HOST
         fromDatabase:
           name: linkedin-lite-db
-          property: connectionString
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: linkedin-lite-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: linkedin-lite-db
+          property: database
       - key: DB_USERNAME
         fromDatabase:
           name: linkedin-lite-db
