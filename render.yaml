@@ -25,6 +25,8 @@ services:
         fromDatabase:
           name: linkedin-lite-db
           property: database
+      - key: DB_PARAMS
+        value: "?sslmode=require"
       - key: DB_USERNAME
         fromDatabase:
           name: linkedin-lite-db
